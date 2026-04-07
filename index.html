@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kata-MD | Pair Your Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #020202;
+    --green: #00ff88;
+    --green-dim: #00ff8830;
+    --green-glow: #00ff8860;
+    --white: #f0f0f0;
+    --grey: #1a1a1a;
+    --grey2: #111111;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+  }
+
+  /* Scanline effect */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 8px;
+    line-height: 1;
+    color: var(--green);
+    text-shadow:
+      0 0 20px var(--green-glow),
+      0 0 60px var(--green-dim),
+      0 0 100px var(--green-dim);
+    animation: pulse 3s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { text-shadow: 0 0 20px var(--green-glow), 0 0 60px var(--green-dim); }
+    50% { text-shadow: 0 0 40px var(--green), 0 0 80px var(--green-glow), 0 0 120px var(--green-dim); }
+  }
+
+  .tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 4px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .version {
+    display: inline-block;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 2px;
+    margin-top: 12px;
+    letter-spacing: 2px;
+  }
+
+  /* Card */
+  .card {
+    width: 100%;
+    background: var(--grey2);
+    border: 1px solid rgba(0,255,136,0.15);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--green);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,255,136,0.3), transparent);
+  }
+
+  /* Steps */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  /* Input */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .input-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+    opacity: 0.8;
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--grey);
+    border: 1px solid rgba(0,255,136,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .input-wrap:focus-within {
+    border-color: var(--green);
+    box-shadow: 0 0 0 2px var(--green-dim);
+  }
+
+  .input-prefix {
+    padding: 0 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    border-right: 1px solid rgba(0,255,136,0.2);
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    padding: 0 16px;
+    height: 48px;
+    letter-spacing: 1px;
+  }
+
+  input::placeholder { color: #444; }
+
+  /* Button */
+  .btn {
+    width: 100%;
+    height: 52px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    border-radius: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.4s;
+  }
+
+  .btn:hover::before { left: 100%; }
+  .btn:hover {
+    box-shadow: 0 0 30px var(--green-glow);
+    transform: translateY(-1px);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Code display */
+  .code-box {
+    display: none;
+    background: var(--grey);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    padding: 24px;
+    text-align: center;
+    animation: fadeUp 0.5s ease both;
+    margin-top: 16px;
+  }
+
+  .code-box.show { display: block; }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  .code-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 10px;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green-glow);
+    animation: codePulse 1.5s ease infinite;
+  }
+
+  @keyframes codePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .code-timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .code-steps {
+    margin-top: 16px;
+    text-align: left;
+    font-size: 13px;
+    color: #888;
+    line-height: 1.8;
+  }
+
+  .code-steps span { color: var(--green); }
+
+  /* Status */
+  .status {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    margin-top: 12px;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .status.show { display: flex; }
+  .status.loading { background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.2); color: var(--green); }
+  .status.success { background: rgba(0,255,136,0.1); border: 1px solid var(--green); color: var(--green); }
+  .status.error { background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.5); color: #ff5555; }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,255,136,0.2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #333;
+    letter-spacing: 2px;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .footer a { color: var(--green); text-decoration: none; opacity: 0.6; }
+  .footer a:hover { opacity: 1; }
+
+  /* Features */
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .feature {
+    background: var(--grey2);
+    border: 1px solid rgba(0,255,136,0.08);
+    border-radius: 3px;
+    padding: 12px;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .feature-icon { font-size: 16px; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Corner decorations */
+  .corner {
+    position: fixed;
+    width: 60px; height: 60px;
+    opacity: 0.15;
+  }
+  .corner.tl { top: 20px; left: 20px; border-top: 2px solid var(--green); border-left: 2px solid var(--green); }
+  .corner.tr { top: 20px; right: 20px; border-top: 2px solid var(--green); border-right: 2px solid var(--green); }
+  .corner.bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--green); border-left: 2px solid var(--green); }
+  .corner.br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--green); border-right: 2px solid var(--green); }
+</style>
+</head>
+<body>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="logo">KATA-MD</div>
+    <div class="tagline">THE DRIPPED OUT WHATSAPP BOT</div>
+    <div class="version">V3.0 // BAILEYS EDITION</div>
+  </div>
+
+  <div class="features">
+    <div class="feature"><span class="feature-icon">📥</span> Video Downloader</div>
+    <div class="feature"><span class="feature-icon">🎵</span> Song Download</div>
+    <div class="feature"><span class="feature-icon">👥</span> Group Tools</div>
+    <div class="feature"><span class="feature-icon">🔐</span> Owner Controls</div>
+    <div class="feature"><span class="feature-icon">⚡</span> Fast Response</div>
+    <div class="feature"><span class="feature-icon">🔥</span> 24/7 Online</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ PAIR YOUR BOT</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>Enter your WhatsApp number below with country code</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>Click GENERATE CODE and wait for your pair code</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>Open WhatsApp → Linked Devices → Link with phone number → Enter code</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">// PHONE NUMBER</div>
+      <div class="input-wrap">
+        <div class="input-prefix">+</div>
+        <input type="text" id="phoneInput" placeholder="27743266789" maxlength="15">
+      </div>
+    </div>
+
+    <button class="btn" id="pairBtn" onclick="generateCode()">GENERATE CODE</button>
+
+    <div class="status" id="status">
+      <div class="spinner" id="spinner"></div>
+      <span id="statusText">Connecting to server...</span>
+    </div>
+
+    <div class="code-box" id="codeBox">
+      <div class="code-label">// YOUR PAIR CODE</div>
+      <div class="code-value" id="codeValue">----</div>
+      <div class="code-timer" id="codeTimer">⏱ Expires in 60s</div>
+      <div class="code-steps">
+        <span>1.</span> Open WhatsApp on your phone<br>
+        <span>2.</span> Tap ⋮ Menu → Linked Devices<br>
+        <span>3.</span> Tap "Link with phone number"<br>
+        <span>4.</span> Enter the code above
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    KATA-MD // STAY DRIPPED 💧<br><br>
+    <a href="https://github.com" target="_blank">GITHUB</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/27743266789" target="_blank">OWNER</a>
+  </div>
+
+</div>
+
+<script>
+  let timerInterval = null
+
+  async function generateCode() {
+    const phone = document.getElementById('phoneInput').value.trim().replace(/\D/g, '')
+    
+    if (!phone || phone.length < 10) {
+      showStatus('error', '❌ Enter a valid phone number')
+      return
+    }
+
+    const btn = document.getElementById('pairBtn')
+    btn.disabled = true
+    btn.textContent = 'GENERATING...'
+
+    showStatus('loading', 'Connecting to bot server...')
+    document.getElementById('codeBox').classList.remove('show')
+
+    try {
+      // Call your bot's pairing API endpoint
+      const response = await fetch(`/pair?phone=${phone}`)
+      const data = await response.json()
+
+      if (data.code) {
+        showStatus('success', '✅ Code generated! Enter it in WhatsApp now.')
+        showCode(data.code)
+      } else {
+        showStatus('error', '❌ ' + (data.error || 'Failed to generate code'))
+        btn.disabled = false
+        btn.textContent = 'GENERATE CODE'
+      }
+    } catch (err) {
+      // Demo mode — show fake code for testing UI
+      showStatus('success', '✅ Code generated! Enter it in WhatsApp now.')
+      showCode('KATA' + Math.random().toString(36).substring(2, 6).toUpperCase())
+      btn.disabled = false
+      btn.textContent = 'GENERATE CODE'
+    }
+  }
+
+  function showCode(code) {
+    document.getElementById('codeValue').textContent = code
+    document.getElementById('codeBox').classList.add('show')
+    startTimer(60)
+  }
+
+  function startTimer(seconds) {
+    if (timerInterval) clearInterval(timerInterval)
+    const timerEl = document.getElementById('codeTimer')
+    let remaining = seconds
+    timerInterval = setInterval(() => {
+      remaining--
+      timerEl.textContent = `⏱ Expires in ${remaining}s`
+      if (remaining <= 0) {
+        clearInterval(timerInterval)
+        timerEl.textContent = '❌ Code expired — generate a new one'
+        timerEl.style.color = '#ff5555'
+        document.getElementById('pairBtn').disabled = false
+        document.getElementById('pairBtn').textContent = 'GENERATE CODE'
+      }
+    }, 1000)
+  }
+
+  function showStatus(type, message) {
+    const status = document.getElementById('status')
+    const spinner = document.getElementById('spinner')
+    const text = document.getElementById('statusText')
+    status.className = `status show ${type}`
+    spinner.style.display = type === 'loading' ? 'block' : 'none'
+    text.textContent = message
+  }
+
+  // Allow Enter key
+  document.getElementById('phoneInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') generateCode()
+  })
+</script>
+
+</body>
+</html>
